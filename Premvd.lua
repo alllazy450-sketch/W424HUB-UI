@@ -50,6 +50,8 @@ Library.OutlineColor    = Color3.fromRGB(40, 60, 90)
 Library.FontColor       = Color3.fromRGB(210, 230, 255)
 
 local LinWindow = Library:CreateWindow({Title = "W424HUB", Center = true, AutoShow = true})
+warn("DEBUG LinWindow="..tostring(LinWindow~=nil))
+if not LinWindow then warn("LinWindow failed!") return end
 
 -- ============================================================
 --  KAIRO COMPATIBILITY SHIM (Linoria backend)
