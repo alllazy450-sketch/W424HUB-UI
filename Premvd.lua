@@ -3,7 +3,7 @@
 
 
 -- ============================================================
---  W424HUB HUB – FULL VERSION (UI Included, No Key System)
+--  W424HUB HUB - FULL VERSION (UI Included, No Key System)
 -- ============================================================
 print("=== LOADING W424HUB HUB FULL ===")
 
@@ -175,7 +175,7 @@ local TabSettings = Window:CreateTab("Settings")
 -- ===== TAB INFO =====
 local SecNotice = TabInfo
 Window:AddDivider(TabInfo, "Informasi & Rules")
--- Paragraph: ⚠️ DILARANG DIPERJUALBELIKAN! - 
+-- Paragraph: [WARNING] DILARANG DIPERJUALBELIKAN! - 
 local SecCommunity = TabInfo
 Window:AddDivider(TabInfo, "Komunitas & Support")
 -- Paragraph: Official Discord Community - 
@@ -2253,9 +2253,9 @@ end))
 -- ============================================================
 Window:Notify({
     Title = "Welcome to W424hub HUB!",
-    Description = "God-AI Systems Initialized.\n💻 PC User: Press [Keybind K] to open/hide the UI.",
+    Description = "God-AI Systems Initialized.\n PC User: Press [Keybind K] to open/hide the UI.",
     Duration = 8,
     Icon = "Sparkles"
 })
 
-print("✅ W424hub HUB Full Loaded!")
+print(" W424hub HUB Full Loaded!")
