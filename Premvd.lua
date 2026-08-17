@@ -45,8 +45,19 @@ local TargetGui = (gethui and gethui()) or CoreGui:FindFirstChild("RobloxGui") o
 --  W424HUB UI (Original - Already Luraph Obfuscated)
 -- ============================================================
 local Debris = game:GetService("Debris")
+warn("DEBUG: fetching W424HUB UI...")
 local _lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/willrev-424/W424HUB/refs/heads/main/W424_UI.lua"))()
+warn("DEBUG: _lib="..tostring(_lib~=nil).." type="..tostring(type(_lib)))
 if not _lib then warn("W424HUB UI failed!") return end
+
+-- Print available methods
+if type(_lib) == "table" then
+    local methods = {}
+    for k,v in pairs(_lib) do
+        if type(v) == "function" then table.insert(methods, tostring(k)) end
+    end
+    warn("DEBUG _lib methods: "..table.concat(methods, ", "))
+end
 
 local Window = _lib:Window({
     Title = "W424HUB",
@@ -55,9 +66,17 @@ local Window = _lib:Window({
     ["Tab Width"] = 130,
     Version = 3
 })
+warn("DEBUG Window="..tostring(Window~=nil).." type="..tostring(type(Window)))
 if not Window then warn("Window failed!") return end
 
-warn("DEBUG Window OK")
+-- Print Window methods
+if type(Window) == "table" then
+    local methods = {}
+    for k,v in pairs(Window) do
+        if type(v) == "function" then table.insert(methods, tostring(k)) end
+    end
+    warn("DEBUG Window methods: "..table.concat(methods, ", "))
+end
 
 -- ============================================================
 --  COMPATIBILITY SHIM (map Kairo API -> W424HUB)
