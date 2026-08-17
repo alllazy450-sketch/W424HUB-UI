@@ -1,7 +1,21 @@
--- link ui baru: https://github.com/Footagesus/WindUI
+-- =================================
+-- UI LIBRARY (Load dari URL)
+-- =================================
+local Window = loadstring(game:HttpGet("https://raw.githubusercontent.com/willrev-424/W424HUB/refs/heads/main/W424_UI.lua"))():Window({
+    Title = "W424 HUB",
+    Footer = "",
+    Image = "109462748520607",
+    Icon = "rbxassetid://109462748520607",
+    Color = Color3.fromRGB(30, 132, 243),
+    ["Tab Width"] = 130,
+    Version = 3
+})
 
-
-
+Window:Tag({
+    Title = "Executor: " .. identifyexecutor(),
+    Color = Color3.fromRGB(100, 100, 100),
+    Radius = 13
+})
 -- ============================================================
 --  W424HUB HUB - FULL VERSION (UI Included, No Key System)
 -- ============================================================
@@ -28,141 +42,114 @@ local PlayerGui=LocalPlayer:WaitForChild("PlayerGui")
 local TargetGui = (gethui and gethui()) or CoreGui:FindFirstChild("RobloxGui") or PlayerGui or CoreGui
 
 -- ============================================================
---  W424HUB UI (Linoria)
+--  W424HUB UI (Original - Already Luraph Obfuscated)
 -- ============================================================
 local Debris = game:GetService("Debris")
-local _lsrc
-local _lok = pcall(function() _lsrc = game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/Library.lua") end)
-warn("DEBUG fetch ok="..tostring(_lok).." len="..(#(_lsrc or "")))
-if not _lok or not _lsrc or _lsrc == "" then warn("Linoria fetch failed!") return end
+local _lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/willrev-424/W424HUB/refs/heads/main/W424_UI.lua"))()
+if not _lib then warn("W424HUB UI failed!") return end
 
--- Patch Linoria: ganti CoreGui ke gethui() atau PlayerGui
-local _targetGui = (gethui and gethui()) or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-_lsrc = _lsrc:gsub("ScreenGui%.Parent = CoreGui", "ScreenGui.Parent = _targetGui")
-_lsrc = "local _targetGui = (gethui and gethui()) or game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui')\n" .. _lsrc
+local Window = _lib:Window({
+    Title = "W424HUB",
+    Footer = "Violent District",
+    Color = Color3.fromRGB(30, 132, 243),
+    ["Tab Width"] = 130,
+    Version = 3
+})
+if not Window then warn("Window failed!") return end
 
-local _lfn, _lerr = loadstring(_lsrc)
-if not _lfn then warn("Linoria loadstring: "..tostring(_lerr)) return end
-local Library
-local _lok2 = pcall(function() Library = _lfn() end)
-warn("DEBUG Library="..tostring(Library~=nil))
-if not _lok2 or not Library then warn("Linoria init failed!") return end
-
--- Ocean theme
-Library.AccentColor     = Color3.fromRGB(0, 130, 200)
-Library.MainColor       = Color3.fromRGB(15, 25, 42)
-Library.BackgroundColor = Color3.fromRGB(10, 18, 30)
-Library.OutlineColor    = Color3.fromRGB(40, 60, 90)
-Library.FontColor       = Color3.fromRGB(210, 230, 255)
-
-local LinWindow = Library:CreateWindow({Title = "W424HUB", Center = true, AutoShow = true})
-warn("DEBUG LinWindow="..tostring(LinWindow~=nil))
-if not LinWindow then warn("LinWindow failed!") return end
+warn("DEBUG Window OK")
 
 -- ============================================================
---  KAIRO COMPATIBILITY SHIM (Linoria backend)
+--  COMPATIBILITY SHIM (map Kairo API -> W424HUB)
 -- ============================================================
-local _flagIdx = 0
-local function _flag() _flagIdx = _flagIdx + 1 return "f"..tostring(_flagIdx) end
-local _tabBoxes = {} -- tab -> last groupbox
-local _usedBoxNames = {} -- prevent duplicate groupbox names
-
--- Window shim object
-local Window = {}
-setmetatable(Window, {__index = Window})
+local _curTabObj = nil
 
 function Window:CreateTab(name)
-    local tab = LinWindow:AddTab(name)
-    _tabBoxes[tab] = {tab=tab, left=nil, right=nil}
+    local tab = self:Tab(name)
+    _curTabObj = tab
     return tab
 end
 
-local function getBox(tab, title)
-    if not _tabBoxes[tab] then _tabBoxes[tab] = {tab=tab, left=nil, right=nil} end
-    local t = _tabBoxes[tab]
-    -- Create new left groupbox for each section
-    local bname = (title or "Section")
-    if not t.boxes then t.boxes = {} end
-    if not t.boxes[bname] then
-        t.boxes[bname] = tab:AddLeftGroupbox(bname)
+function Window:AddDivider(tab, title)
+    if tab and tab.Section then
+        return tab:Section(title or "")
     end
-    t.lastBox = t.boxes[bname]
-    return t.lastBox
+    return tab
 end
 
 function Window:AddCollapsible(tab, title, open)
-    return getBox(tab, title)
-end
-
-function Window:AddDivider(tab, title)
-    return getBox(tab, title)
-end
-
-function Window:AddParagraph(tab, title, text)
-    local box = getBox(tab, title)
-    box:AddLabel(text or title)
-    return {Text = text}
+    return self:AddDivider(tab, title)
 end
 
 function Window:AddToggle(section, title, desc, default, fn)
-    if not section or not section.AddToggle then return end
-    section:AddToggle(_flag(), {
-        Text = title or "",
-        Default = default or false,
-        Callback = fn or function() end
-    })
+    if not section then return end
+    pcall(function()
+        section:Toggle({
+            Name = title or "",
+            Default = default or false,
+            Callback = fn or function() end
+        })
+    end)
 end
 
 function Window:AddButton(section, title, desc, icon, fn)
-    if not section or not section.AddButton then return end
-    section:AddButton({Text = title or "", Func = fn or function() end})
+    if not section then return end
+    pcall(function()
+        section:Button({
+            Name = title or "",
+            Callback = fn or function() end
+        })
+    end)
 end
 
 function Window:AddSlider(section, title, desc, min, max, default, fn)
-    if not section or not section.AddSlider then return end
-    section:AddSlider(_flag(), {
-        Text = title or "",
-        Min = min or 0,
-        Max = max or 100,
-        Default = default or 0,
-        Rounding = 0,
-        Callback = fn or function() end
-    })
+    if not section then return end
+    pcall(function()
+        section:Slider({
+            Name = title or "",
+            Min = min or 0,
+            Max = max or 100,
+            Default = default or 0,
+            Callback = fn or function() end
+        })
+    end)
 end
 
 function Window:AddDropdown(section, title, desc, options, multi, default, fn)
-    if not section or not section.AddDropdown then return end
-    section:AddDropdown(_flag(), {
-        Text = title or "",
-        Values = options or {},
-        Default = 1,
-        Multi = multi or false,
-        Callback = fn or function() end
-    })
+    if not section then return end
+    pcall(function()
+        section:Dropdown({
+            Name = title or "",
+            Options = options or {},
+            Default = default or "",
+            Multi = multi or false,
+            Callback = fn or function() end
+        })
+    end)
 end
 
-function Window:AddInput(section, title, desc, placeholder, fn)
-    if not section or not section.AddInput then return end
-    section:AddInput(_flag(), {
-        Text = title or "",
-        Default = placeholder or "",
-        Numeric = false,
-        Finished = false,
-        Callback = fn or function() end
-    })
+function Window:AddParagraph(tab, title, text)
+    if not tab then return end
+    local ref = {Text = text or ""}
+    pcall(function()
+        tab:Label(title..(text and (": "..text) or ""))
+    end)
+    return ref
 end
 
 function Window:Notify(t)
     if type(t) == "table" then
-        Library:Notify({
-            Title = t.Title or "W424HUB",
-            Content = t.Description or t.Content or "",
-            Duration = t.Duration or 3,
-        })
+        pcall(function()
+            _lib:Notification({
+                Title = t.Title or "W424HUB",
+                Content = t.Description or "",
+                Time = t.Duration or 3
+            })
+        end)
     end
 end
 
-print("OK W424HUB Linoria loaded")
+print("OK W424HUB UI loaded")
 
 -- ============================================================
 --  UI WINDOW
