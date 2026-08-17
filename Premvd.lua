@@ -35,6 +35,12 @@ local _lsrc
 local _lok = pcall(function() _lsrc = game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/Library.lua") end)
 warn("DEBUG fetch ok="..tostring(_lok).." len="..(#(_lsrc or "")))
 if not _lok or not _lsrc or _lsrc == "" then warn("Linoria fetch failed!") return end
+
+-- Patch Linoria: ganti CoreGui ke gethui() atau PlayerGui
+local _targetGui = (gethui and gethui()) or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+_lsrc = _lsrc:gsub("ScreenGui%.Parent = CoreGui", "ScreenGui.Parent = _targetGui")
+_lsrc = "local _targetGui = (gethui and gethui()) or game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui')\n" .. _lsrc
+
 local _lfn, _lerr = loadstring(_lsrc)
 if not _lfn then warn("Linoria loadstring: "..tostring(_lerr)) return end
 local Library
